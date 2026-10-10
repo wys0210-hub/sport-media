@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>運動媒體轉譯專題</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; }
+        textarea, input[type="text"] { width: 100%; border: 1px solid #cbd5e1; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; background: #fff; }
+        textarea:focus, input[type="text"]:focus { outline: 2px solid #6366f1; border-color: transparent; }
+        .pdf-field { border: 1px solid #94a3b8; border-radius: 0.4rem; padding: 0.4rem 0.6rem; font-size: 0.875rem; min-height: 2rem; white-space: pre-wrap; word-break: break-word; background: #fff; color: #0f172a; }
+        .pdf-field.tall { min-height: 4.5rem; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-700 via-indigo-700 to-slate-900 text-white shadow-lg no-print">
+        <div class="max-w-6xl mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <span class="bg-blue-500/30 text-blue-200 text-xs font-semibold px-3 py-1 rounded-full border border-blue-400/30">課程專題與教學導引</span>
+                    <h1 class="text-2xl md:text-3xl font-extrabold mt-2 tracking-tight">用媒體內容向目標觀眾介紹一項運動</h1>
+                    <p class="text-blue-100 text-sm mt-1">專題公式：一項運動 × 一類觀眾 × 一件作品 → 精準資訊轉譯</p>
+                </div>
+                <button onclick="exportPDF(this)" class="export-btn bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2.5 px-5 rounded-lg shadow-md transition flex items-center gap-2 text-sm">
+                    <i class="fa-solid fa-file-pdf"></i> <span>匯出學習單 PDF</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tabs -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm no-print">
+        <div class="max-w-6xl mx-auto px-4 flex space-x-2 md:space-x-6 overflow-x-auto">
+            <button onclick="switchTab('guide')" id="tab-guide" class="tab-btn py-3 px-4 font-semibold text-sm border-b-2 border-blue-600 text-blue-600 flex items-center gap-2 whitespace-nowrap">
+                <i class="fa-solid fa-chalkboard-user"></i> 1. 教案指引與 TA 矩陣
+            </button>
+            <button onclick="switchTab('yt')" id="tab-yt" class="tab-btn py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 whitespace-nowrap">
+                <i class="fa-brands fa-youtube text-red-500"></i> 2. YT 標竿媒體案例庫
+            </button>
+            <button onclick="switchTab('decisions')" id="tab-decisions" class="tab-btn py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 whitespace-nowrap">
+                <i class="fa-solid fa-sliders text-amber-500"></i> 3. 媒體製作決策指南
+            </button>
+            <button onclick="switchTab('worksheet')" id="tab-worksheet" class="tab-btn py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 whitespace-nowrap">
+                <i class="fa-solid fa-file-pen text-indigo-600"></i> 4. 學生實踐學習單
+            </button>
+            <button onclick="switchTab('rubric')" id="tab-rubric" class="tab-btn py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 whitespace-nowrap">
+                <i class="fa-solid fa-list-check text-emerald-600"></i> 5. 成效評估規準
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
+
+        <!-- TAB 1 -->
+        <section id="content-guide" class="tab-content block space-y-6">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 card-box">
+                <h2 class="text-xl font-bold text-slate-900 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-bullseye text-blue-600"></i> 專題教學核心目標
+                </h2>
+                <p class="text-slate-600 leading-relaxed text-sm md:text-base">
+                    本課程旨在訓練學生的<b>「資訊轉譯能力」</b>與<b>「換位思考溝通力」</b>。學生需打破同溫層語境，從原本「我想講什麼（傳播者視角）」切換為「TA 想聽什麼、聽得懂什麼（接收者視角）」，完成一份具備具體目標觀眾（TA）的媒體作品與現場實測。
+                </p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 card-box">
+                <h2 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-users-viewfinder text-indigo-600"></i> TA 自由選雙軸對照矩陣
+                </h2>
+                <p class="text-slate-500 text-sm mb-6">請引導學生從「年齡區段」與「觀眾類型」各自由挑選一項，碰撞出具體的溝通 Persona：</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <h3 class="font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-cake-candles text-pink-500"></i> 軸線 A：六大年齡區段（生命階段）
+                        </h3>
+                        <ul class="space-y-2 text-xs md:text-sm text-slate-600">
+                            <li><b class="text-slate-800">1. 兒童（12歲以下）：</b> 抽象思維低，需生活比喻與高彩度視覺。</li>
+                            <li><b class="text-slate-800">2. 青少年（13-18歲）：</b> 注意力快，追求酷炫感與短影音衝擊。</li>
+                            <li><b class="text-slate-800">3. 大學生（19-23歲）：</b> 熟悉次文化、社群迷因與話題爭議。</li>
+                            <li><b class="text-slate-800">4. 上班族（25-45歲）：</b> 時間零碎，追求高效率與清晰邏輯數據。</li>
+                            <li><b class="text-slate-800">5. 中壯年（50-65歲）：</b> 關注運動保健與安全防護，偏好平實風格。</li>
+                            <li><b class="text-slate-800">6. 樂齡者（65歲以上）：</b> 生理吸收放緩，需大字體、高對比與安心感。</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <h3 class="font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-masks-theater text-amber-500"></i> 軸線 B：六大觀眾類型（溝通情境）
+                        </h3>
+                        <ul class="space-y-2 text-xs md:text-sm text-slate-600">
+                            <li><b class="text-slate-800">1. 完全初學者（零基礎）：</b> 一竅不通，需極致降維與去除術語。</li>
+                            <li><b class="text-slate-800">2. 第一次進場觀眾（現場型）：</b> 坐在現場，需看懂裁判手勢與現場爭議。</li>
+                            <li><b class="text-slate-800">3. 一日大賽球迷（跟風型）：</b> 只看大賽，需速成懶人包與熱門話題。</li>
+                            <li><b class="text-slate-800">4. 線上轉播觀眾（螢幕型）：</b> 看電視/手機，需看懂轉播圖表與戰術線。</li>
+                            <li><b class="text-slate-800">5. 粉絲/追星族（偶像導向）：</b> 只看球星/啦啦隊，需延伸連結運動本體。</li>
+                            <li><b class="text-slate-800">6. 陪同/抗拒型（被動型）：</b> 被拉來看或排斥，需用故事或美學誘發動機。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2 -->
+        <section id="content-yt" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 card-box">
+                <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2">
+                    <i class="fa-brands fa-youtube text-red-600"></i> YouTube 運動傳播標竿案例與連結
+                </h2>
+                <p class="text-slate-500 text-sm mb-4">學生可在腳本設計前，參考對應年齡層與型態的優秀轉譯頻道：</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs md:text-sm">
+                        <thead>
+                            <tr class="bg-slate-100 border-b border-slate-200 text-slate-700">
+                                <th class="p-3">年齡與型態區段</th>
+                                <th class="p-3">YouTube 頻道範例與連結</th>
+                                <th class="p-3">媒體視覺與節奏策略重點</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 text-slate-600">
+                            <tr>
+                                <td class="p-3 font-semibold text-slate-800">兒童 / 律動帶動</td>
+                                <td class="p-3 space-y-1">
+                                    <div><a href="https://www.youtube.com/@yoyotvebc" target="_blank" rel="noopener" class="text-blue-600 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> YOYOTV 官方頻道</a></div>
+                                    <div><a href="https://www.youtube.com/@Pinkfong" target="_blank" rel="noopener" class="text-blue-600 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> Pinkfong 碰碰狐</a></div>
+                                </td>
+                                <td class="p-3">角色動畫、高彩度視覺、故事性引導，完全無生硬專有名詞。</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold text-slate-800">青少年 / 短影音</td>
+                                <td class="p-3 space-y-1">
+                                    <div><a href="https://www.youtube.com/@ryder_spootd" target="_blank" rel="noopener" class="text-blue-600 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> 球給彭尊 SPOOTD</a></div>
+                                    <div><a href="https://www.youtube.com/@coldriceNBA" target="_blank" rel="noopener" class="text-blue-600 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> 冷飯說NBA</a></div>
+                                </td>
+                                <td class="p-3">前 3 秒視覺衝擊、快節奏字體特效、迷因卡點與潮流音樂。</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold text-slate-800">大學生 / 時事說書</td>
+                                <td class="p-3 space-y-1">
+                                    <div><a href="https://www.youtube.com/@TheHoopsMic" target="_blank" rel="noopener" class="text-blue-600 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> 籃球說書人</a></div>
+                                    <div><a href="https://www.youtube.com/@shasha77" target="_blank" rel="noopener" class="text-blue-600 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> 志祺七七 X 圖文不符</a></div>
+                                </td>
+                                <td class="p-3">社群懶人包風格、幽默吐槽、話題性切入與視覺圖表卡片。</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold text-slate-800">上班族 / 戰術數據</td>
+                                <td class="p-3 space-y-1">
+                                    <div><a href="https://www.youtube.com/@ELTASPORTSHD" target="_blank" rel="noopener" class="text-blue-600 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> 愛爾達體育家族 ELTA Sports</a></div>
+                                    <div><a href="https://www.youtube.com/@cyfang58" target="_blank" rel="noopener" class="text-blue-600 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> 豹子腿方昶詠</a></div>
+                                </td>
+                                <td class="p-3">戰術畫線（HUD 覆蓋）、數據分析圖表、條理清晰的白話解說。</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold text-slate-800">中壯年 / 運動醫學</td>
+                                <td class="p-3 space-y-1">
+                                    <div><a href="https://www.youtube.com/@sunguts" target="_blank" rel="noopener" class="text-blue-600 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> 三個字 SunGuts</a></div>
+                                </td>
+                                <td class="p-3">真人實拍示範、字體清晰放大、重點標註明確，語速穩健。</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold text-slate-800">樂齡者 / 健康引導</td>
+                                <td class="p-3 space-y-1">
+                                    <div><a href="https://www.youtube.com/watch?v=_w50TfdCmKU" target="_blank" rel="noopener" class="text-blue-600 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> 衛福部《高齡者健康操》</a></div>
+                                    <div><a href="https://www.youtube.com/watch?v=FUEycvXH3GA" target="_blank" rel="noopener" class="text-blue-600 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> 衞生署《活力長者健康操》</a></div>
+                                </td>
+                                <td class="p-3">超大字體（高對比）、慢語速、聲音與字幕完全同步無雜音。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3 -->
+        <section id="content-decisions" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 card-box">
+                <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-amber-500"></i> 非傳播系學生專用《媒體製作決策參考指南》
+                </h2>
+                <p class="text-slate-500 text-sm mb-4">提供「選單式腳手架」，學生只需像點餐一樣挑選最適合其 TA 的製作手法：</p>
+
+                <div class="grid grid-cols-1 gap-4 text-xs md:text-sm">
+                    <div class="border border-slate-200 rounded-lg p-4 bg-slate-50 space-y-1">
+                        <h3 class="font-bold text-blue-700 text-base mb-2">維度 1：媒體形式與規格</h3>
+                        <p class="text-slate-700"><b>選項 A：</b>直式短影音（Shorts/Reels，30-60 秒）→ 適合青少年、大學生、跟風型球迷。</p>
+                        <p class="text-slate-700"><b>選項 B：</b>橫式解說影片（YT 影片，3-5 分鐘）→ 適合上班族、中壯年、螢幕型觀眾。</p>
+                        <p class="text-slate-700"><b>選項 C：</b>社群懶人包 / 資訊圖卡（IG 輪播 5-8 張）→ 適合大學生、上班族、粉絲型觀眾。</p>
+                        <p class="text-slate-700"><b>選項 D：</b>紙本 / 現場導覽小卡（A5 摺頁或觀賽手冊）→ 適合樂齡者、第一次進場觀眾。</p>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-4 bg-slate-50 space-y-1">
+                        <h3 class="font-bold text-blue-700 text-base mb-2">維度 2：敘事切入策略</h3>
+                        <p class="text-slate-700"><b>選項 A：</b>生活比喻法（「越位就像排隊插隊」）→ 適合兒童、完全初學者、抗拒型觀眾。</p>
+                        <p class="text-slate-700"><b>選項 B：</b>問題解答法（「為什麼裁判吹哨？」）→ 適合第一次進場觀眾、螢幕型觀眾。</p>
+                        <p class="text-slate-700"><b>選項 C：</b>人物故事法（從一位球星或啦啦隊員切入）→ 適合粉絲型、陪同型觀眾。</p>
+                        <p class="text-slate-700"><b>選項 D：</b>話題爭議法（從一個熱門判決或事件切入）→ 適合大學生、跟風型球迷。</p>
+                        <p class="text-slate-700"><b>選項 E：</b>數據比較法（用數字與圖表說明關鍵）→ 適合上班族、螢幕型觀眾。</p>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-4 bg-slate-50 space-y-1">
+                        <h3 class="font-bold text-blue-700 text-base mb-2">維度 3：術語與語言層級</h3>
+                        <p class="text-slate-700"><b>層級 1 零術語：</b>完全用日常語言替代專有名詞 → 兒童、樂齡者、完全初學者。</p>
+                        <p class="text-slate-700"><b>層級 2 術語＋白話註解：</b>保留術語但立刻解釋（「三分線，也就是外圍那條弧線」）→ 多數 TA 的安全選擇。</p>
+                        <p class="text-slate-700"><b>層級 3 圈內語言：</b>使用球迷慣用語與迷因 → 只適合已有基礎的粉絲或大學生。</p>
+                        <p class="text-slate-500 mt-1"><i class="fa-solid fa-lightbulb text-amber-500"></i> 提醒：作品中最多只出現 3 個新術語，其餘一律轉譯。</p>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-4 bg-slate-50 space-y-1">
+                        <h3 class="font-bold text-blue-700 text-base mb-2">維度 4：視覺與字幕設計</h3>
+                        <p class="text-slate-700"><b>選項 A：</b>高彩度插畫、角色動畫 → 兒童。</p>
+                        <p class="text-slate-700"><b>選項 B：</b>快剪、跳字、特效字卡 → 青少年、大學生。</p>
+                        <p class="text-slate-700"><b>選項 C：</b>戰術畫線、圖表、重點框選 → 上班族、螢幕型觀眾。</p>
+                        <p class="text-slate-700"><b>選項 D：</b>大字體、高對比、全程字幕、畫面單純 → 中壯年、樂齡者。</p>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-4 bg-slate-50 space-y-1">
+                        <h3 class="font-bold text-blue-700 text-base mb-2">維度 5：聲音與節奏</h3>
+                        <p class="text-slate-700"><b>選項 A：</b>快節奏配樂＋卡點剪輯 → 青少年、跟風型球迷。</p>
+                        <p class="text-slate-700"><b>選項 B：</b>口語旁白、語速中等、輕配樂 → 大學生、上班族。</p>
+                        <p class="text-slate-700"><b>選項 C：</b>慢語速、無背景音樂或極低音量、重點重複一次 → 中壯年、樂齡者。</p>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-4 bg-slate-50 space-y-1">
+                        <h3 class="font-bold text-blue-700 text-base mb-2">維度 6：實測方式</h3>
+                        <p class="text-slate-700"><b>選項 A：</b>找 3-5 位符合 TA 的真人觀看作品，看完請他說出記得的 3 件事。</p>
+                        <p class="text-slate-700"><b>選項 B：</b>觀看前後各做一題簡單小測驗（例如「這個手勢代表什麼？」），比較答對率。</p>
+                        <p class="text-slate-700"><b>選項 C：</b>在社群平台實際發布，記錄觀看、留言與分享數，並整理留言回饋。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4 -->
+        <section id="content-worksheet" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 card-box">
+                <h2 class="text-xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+                    <i class="fa-solid fa-file-pen text-indigo-600"></i> 學生實踐學習單
+                </h2>
+                <p class="text-slate-500 text-sm mb-4 no-print">可直接在網頁上填寫，完成後按「匯出學習單 PDF」下載檔案繳交。（網頁重新整理後內容會清除，請記得先匯出）</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                    <label class="block"><span class="font-semibold text-slate-700">組別 / 姓名</span><input type="text" id="ws-name"></label>
+                    <label class="block"><span class="font-semibold text-slate-700">學號</span><input type="text" id="ws-id"></label>
+                    <label class="block"><span class="font-semibold text-slate-700">選定運動項目</span><input type="text"></label>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 card-box text-sm space-y-3">
+                <h3 class="font-bold text-indigo-700 text-base">Step 1｜鎖定你的 TA</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <label class="block"><span class="font-semibold text-slate-700">軸線 A 年齡區段</span><input type="text" placeholder="例：樂齡者（65 歲以上）"></label>
+                    <label class="block"><span class="font-semibold text-slate-700">軸線 B 觀眾類型</span><input type="text" placeholder="例：陪同/抗拒型"></label>
+                </div>
+                <label class="block"><span class="font-semibold text-slate-700">Persona 描述（一句話描寫一個具體的人）</span>
+                    <textarea rows="2" placeholder="例：72 歲的阿嬤，被孫子拉去看棒球，覺得看不懂又太吵。"></textarea></label>
+                <label class="block"><span class="font-semibold text-slate-700">這位 TA 目前對這項運動的困惑或障礙是什麼？</span>
+                    <textarea rows="3"></textarea></label>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 card-box text-sm space-y-3">
+                <h3 class="font-bold text-indigo-700 text-base">Step 2｜核心訊息：看完後，TA 只要記得這 3 件事</h3>
+                <label class="block"><span class="font-semibold text-slate-700">訊息 1</span><input type="text"></label>
+                <label class="block"><span class="font-semibold text-slate-700">訊息 2</span><input type="text"></label>
+                <label class="block"><span class="font-semibold text-slate-700">訊息 3</span><input type="text"></label>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 card-box text-sm space-y-3">
+                <h3 class="font-bold text-indigo-700 text-base">Step 3｜術語轉譯表（最多 3 個）</h3>
+                <div class="grid grid-cols-2 gap-3 font-semibold text-slate-700">
+                    <span>原本的專有名詞</span><span>轉譯成 TA 聽得懂的說法</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3"><input type="text" placeholder="例：好球帶"><input type="text" placeholder="例：打者膝蓋到胸口之間的隱形框框"></div>
+                <div class="grid grid-cols-2 gap-3"><input type="text"><input type="text"></div>
+                <div class="grid grid-cols-2 gap-3"><input type="text"><input type="text"></div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 card-box text-sm space-y-3">
+                <h3 class="font-bold text-indigo-700 text-base">Step 4｜製作決策（對照第 3 頁「媒體製作決策指南」）</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <label class="block"><span class="font-semibold text-slate-700">維度 1 媒體形式</span><input type="text"></label>
+                    <label class="block"><span class="font-semibold text-slate-700">維度 2 敘事策略</span><input type="text"></label>
+                    <label class="block"><span class="font-semibold text-slate-700">維度 3 術語層級</span><input type="text"></label>
+                    <label class="block"><span class="font-semibold text-slate-700">維度 4 視覺設計</span><input type="text"></label>
+                    <label class="block"><span class="font-semibold text-slate-700">維度 5 聲音節奏</span><input type="text"></label>
+                    <label class="block"><span class="font-semibold text-slate-700">維度 6 實測方式</span><input type="text"></label>
+                </div>
+                <label class="block"><span class="font-semibold text-slate-700">參考的標竿案例（第 2 頁）與想學習的地方</span><textarea rows="2"></textarea></label>
+                <label class="block"><span class="font-semibold text-slate-700">為什麼這些選擇適合你的 TA？</span><textarea rows="3"></textarea></label>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 card-box text-sm space-y-3">
+                <h3 class="font-bold text-indigo-700 text-base">Step 5｜腳本 / 內容大綱</h3>
+                <label class="block"><span class="font-semibold text-slate-700">開場（前 3 秒或第 1 張圖卡怎麼抓住 TA？）</span><textarea rows="2"></textarea></label>
+                <label class="block"><span class="font-semibold text-slate-700">中段（如何依序帶出 3 個核心訊息？）</span><textarea rows="4"></textarea></label>
+                <label class="block"><span class="font-semibold text-slate-700">結尾（希望 TA 看完採取什麼行動或產生什麼感受？）</span><textarea rows="2"></textarea></label>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 card-box text-sm space-y-3">
+                <h3 class="font-bold text-indigo-700 text-base">Step 6｜現場實測與修正</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <label class="block"><span class="font-semibold text-slate-700">受測對象（人數與基本描述）</span><input type="text"></label>
+                    <label class="block"><span class="font-semibold text-slate-700">實測日期與方式</span><input type="text"></label>
+                </div>
+                <label class="block"><span class="font-semibold text-slate-700">TA 實際記得 / 理解了什麼？與預期的 3 個核心訊息相比如何？</span><textarea rows="3"></textarea></label>
+                <label class="block"><span class="font-semibold text-slate-700">TA 看不懂或沒興趣的地方</span><textarea rows="3"></textarea></label>
+                <label class="block"><span class="font-semibold text-slate-700">根據回饋，你修改了什麼？</span><textarea rows="3"></textarea></label>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 card-box text-sm space-y-3">
+                <h3 class="font-bold text-indigo-700 text-base">Step 7｜個人反思</h3>
+                <label class="block"><span class="font-semibold text-slate-700">從「我想講什麼」轉換到「TA 聽得懂什麼」，最困難的是哪一步？你學到了什麼？</span><textarea rows="4"></textarea></label>
+            </div>
+
+            <div class="no-print flex justify-center">
+                <button onclick="exportPDF(this)" class="export-btn bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition flex items-center gap-2 text-sm">
+                    <i class="fa-solid fa-file-pdf"></i> <span>填寫完成，匯出學習單 PDF</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- TAB 5 -->
+        <section id="content-rubric" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 card-box">
+                <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-emerald-600"></i> 成效評估規準（Rubric）
+                </h2>
+                <p class="text-slate-500 text-sm mb-4">總分 100 分。每個向度依表現給予對應等級分數。</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs md:text-sm">
+                        <thead>
+                            <tr class="bg-slate-100 border-b border-slate-200 text-slate-700">
+                                <th class="p-3 w-32">評估向度</th>
+                                <th class="p-3">優秀（100%）</th>
+                                <th class="p-3">良好（80%）</th>
+                                <th class="p-3">待加強（60%）</th>
+                                <th class="p-3">未達標（40% 以下）</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 text-slate-600 align-top">
+                            <tr>
+                                <td class="p-3 font-semibold text-slate-800">TA 設定精準度<br><span class="text-emerald-600">15%</span></td>
+                                <td class="p-3">Persona 具體鮮明，清楚指出 TA 的困惑與需求。</td>
+                                <td class="p-3">Persona 清楚，但需求描述略籠統。</td>
+                                <td class="p-3">只寫出年齡或類型，缺乏具體描寫。</td>
+                                <td class="p-3">TA 模糊，等同「所有人」。</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold text-slate-800">資訊正確性<br><span class="text-emerald-600">15%</span></td>
+                                <td class="p-3">規則與知識完全正確，簡化後仍不失真。</td>
+                                <td class="p-3">大致正確，有 1 處小瑕疵。</td>
+                                <td class="p-3">有明顯錯誤或過度簡化導致誤解。</td>
+                                <td class="p-3">多處錯誤，可能誤導觀眾。</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold text-slate-800">轉譯有效性<br><span class="text-emerald-600">25%</span></td>
+                                <td class="p-3">術語全部妥善轉譯，比喻貼近 TA 生活經驗。</td>
+                                <td class="p-3">多數術語有轉譯，比喻大致適切。</td>
+                                <td class="p-3">仍有不少未解釋的術語。</td>
+                                <td class="p-3">以傳播者視角自說自話。</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold text-slate-800">媒體形式適配<br><span class="text-emerald-600">20%</span></td>
+                                <td class="p-3">形式、視覺、聲音與節奏皆符合 TA 習慣，並能說明理由。</td>
+                                <td class="p-3">多數選擇適合 TA，理由稍弱。</td>
+                                <td class="p-3">部分選擇與 TA 不符。</td>
+                                <td class="p-3">形式選擇與 TA 明顯衝突。</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold text-slate-800">製作完成度<br><span class="text-emerald-600">10%</span></td>
+                                <td class="p-3">作品完整流暢，字幕、畫面、聲音無明顯瑕疵。</td>
+                                <td class="p-3">作品完整，有少量技術瑕疵。</td>
+                                <td class="p-3">作品粗糙或部分未完成。</td>
+                                <td class="p-3">作品未完成。</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold text-slate-800">實測與修正<br><span class="text-emerald-600">15%</span></td>
+                                <td class="p-3">實際找到符合 TA 的對象測試，具體記錄回饋並完成修正。</td>
+                                <td class="p-3">有實測與紀錄，修正幅度有限。</td>
+                                <td class="p-3">實測對象不符 TA，或紀錄簡略。</td>
+                                <td class="p-3">未進行實測。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 card-box text-sm">
+                <h3 class="font-bold text-slate-900 mb-2 flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-600"></i> 繳交前自我檢核</h3>
+                <ul class="space-y-1 text-slate-600">
+                    <li><label><input type="checkbox" class="mr-2">我的 TA 是一個具體的人，而不是「大家」。</label></li>
+                    <li><label><input type="checkbox" class="mr-2">作品中出現的新術語不超過 3 個，且都有白話解釋。</label></li>
+                    <li><label><input type="checkbox" class="mr-2">我能說明每一項製作決策為什麼適合這位 TA。</label></li>
+                    <li><label><input type="checkbox" class="mr-2">我實際找了符合 TA 的人看過作品，並依回饋修改。</label></li>
+                    <li><label><input type="checkbox" class="mr-2">學習單 Step 1-7 都已填寫完成。</label></li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center text-xs text-slate-400 py-6 no-print">運動與媒體｜課程專題教學導引</footer>
+
+    <script>
+        function switchTab(name) {
+            document.querySelectorAll('.tab-content').forEach(function (el) {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            var target = document.getElementById('content-' + name);
+            target.classList.remove('hidden');
+            target.classList.add('block');
+
+            document.querySelectorAll('.tab-btn').forEach(function (btn) {
+                btn.classList.remove('border-blue-600', 'text-blue-600');
+                btn.classList.add('border-transparent', 'text-slate-500');
+            });
+            var active = document.getElementById('tab-' + name);
+            active.classList.remove('border-transparent', 'text-slate-500');
+            active.classList.add('border-blue-600', 'text-blue-600');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function buildWorksheetClone() {
+            var src = document.getElementById('content-worksheet');
+            var clone = src.cloneNode(true);
+            clone.removeAttribute('id');
+            clone.classList.remove('hidden');
+            clone.classList.add('block');
+            clone.querySelectorAll('.no-print').forEach(function (el) { el.remove(); });
+
+            // 把輸入框換成純文字方塊，確保填寫內容完整出現在 PDF
+            var srcFields = src.querySelectorAll('input[type="text"], textarea');
+            var cloneFields = clone.querySelectorAll('input[type="text"], textarea');
+            cloneFields.forEach(function (field, i) {
+                var box = document.createElement('div');
+                box.className = 'pdf-field' + (field.tagName === 'TEXTAREA' ? ' tall' : '');
+                box.textContent = srcFields[i].value;
+                field.replaceWith(box);
+            });
+
+            var title = document.createElement('div');
+            title.style.cssText = 'font-size:18px;font-weight:900;color:#0f172a;margin-bottom:12px;';
+            title.textContent = '用媒體內容向目標觀眾介紹一項運動｜學生實踐學習單';
+
+            var wrapper = document.createElement('div');
+            wrapper.style.cssText = 'width:760px;background:#fff;padding:8px;font-family:"Noto Sans TC",sans-serif;';
+            wrapper.appendChild(title);
+            wrapper.appendChild(clone);
+            return wrapper;
+        }
+
+        function safeName(s) {
+            return (s || '').trim().replace(/[\\/:*?"<>|\s]+/g, '_');
+        }
+
+        function exportPDF(btn) {
+            if (typeof html2pdf === 'undefined') {
+                alert('PDF 工具載入失敗，請檢查網路連線後重新整理頁面（重新整理前請先備份已填寫的內容）。');
+                return;
+            }
+            var buttons = document.querySelectorAll('.export-btn');
+            buttons.forEach(function (b) { b.disabled = true; b.classList.add('opacity-60'); b.querySelector('span').dataset.label = b.querySelector('span').textContent; b.querySelector('span').textContent = '產生 PDF 中…'; });
+
+            var name = safeName(document.getElementById('ws-name').value);
+            var sid = safeName(document.getElementById('ws-id').value);
+            var filename = '學習單' + (name ? '_' + name : '') + (sid ? '_' + sid : '') + '.pdf';
+
+            var opt = {
+                margin: [10, 10, 10, 10],
+                filename: filename,
+                image: { type: 'jpeg', quality: 0.95 },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['css', 'legacy'], avoid: '.card-box' }
+            };
+
+            function restore() {
+                buttons.forEach(function (b) { b.disabled = false; b.classList.remove('opacity-60'); b.querySelector('span').textContent = b.querySelector('span').dataset.label; });
+            }
+            html2pdf().set(opt).from(buildWorksheetClone()).save().then(restore, function () {
+                restore();
+                alert('匯出失敗，請再試一次。');
+            });
+        }
+    </script>
+</body>
+</html>
